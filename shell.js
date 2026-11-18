@@ -20,12 +20,12 @@ if(SH.open)h+='<div class="sh-menu" role="menu"><div class="sh-who"><b>'+esc(u.n
 SH.items.map(function(it,i){return '<button type="button" role="menuitem" class="sh-it" data-sh="item" data-i="'+i+'">'+ic(it.icon||"user")+esc(it.label)+'</button>'}).join("")+
 (window.Shell.canInstall()?'<button type="button" role="menuitem" class="sh-it" data-sh="install">'+ic("dl")+'Instalar como aplicativo</button>':'')+
 '<button type="button" role="menuitem" class="sh-it" data-sh="reset">'+ic("redo")+(SH.arm?'Toque de novo para apagar tudo':'Recomeçar a demonstração')+'</button>'+
-'<a role="menuitem" class="sh-it" href="'+HUB+'">'+ic("grid")+'Ver todos os protótipos</a>'+
+'<a role="menuitem" class="sh-it" href="'+HUB+'">'+ic("grid")+'Ver o portfólio</a>'+
 '<button type="button" role="menuitem" class="sh-it sh-out" data-sh="logout">'+ic("out")+'Sair</button></div>'}
 else if(o.right)h+=o.right;
 return h+'</header>'},
 link:function(href,label){return '<a class="sh-link" href="'+href+'">'+esc(label)+'</a>'},
-hub:function(){return '<a class="sh-link" href="'+HUB+'">'+ic("grid")+'Protótipos</a>'},
+hub:function(){return '<a class="sh-link" href="'+HUB+'">'+ic("grid")+'Portfólio</a>'},
 after:function(){var s=document.querySelector("#app .back svg"),el=s?s.closest(".back"):null,bb=document.querySelector(".sh-bar [data-sh=back]");
 if(el){el.classList.add("sh-hide");if(bb)bb.hidden=false;if(!SH.pushed){try{history.pushState({sh:1},"",location.href)}catch(e){}SH.pushed=true}}
 else if(SH.pushed){SH.pushed=false;SH.skip++;history.back()}}
