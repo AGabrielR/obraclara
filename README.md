@@ -6,6 +6,6 @@ Os clientes, empreiteiros e valores são fictícios. As fotos foram geradas por 
 
 ## Como testar
 
-- **Entrar:** `cliente` (dono da obra) ou `silva` (empreiteiro). A senha dos dois é `demo`.
+- **Entrar:** `cliente` (dono da obra) ou `silva` (empreiteiro, com as abas Em andamento, Na região e Para você). A senha dos dois é `demo`.
 - **Pedido de orçamento direto, sem login (visão do empreiteiro):** `?pedido=d1`
-- **Recomeçar do zero:** menu do usuário, no topo, em "Recomeçar a demonstração".
+- **Sair ou recomeçar do zero:** botão redondo com as iniciais, no canto de cima.

@@ -211,6 +211,24 @@ input[type=text],input[type=date],select,textarea{font-size:17px;padding:13px 14
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#a5b4fc;--accent-ink:#1e1b4b;--accent-soft:#232552}}
 :root[data-theme="dark"]{--accent:#a5b4fc;--accent-ink:#1e1b4b;--accent-soft:#232552}
 
+body{padding-top:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--page);z-index:26}
+.sh-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:25;display:flex;align-items:center;gap:10px;background:var(--page);padding:10px 0;margin-bottom:14px;border-bottom:1px solid var(--line)}
+.sh-t{flex:1;min-width:0;display:flex;flex-direction:column}
+.sh-t b{font:700 21px var(--fd);color:var(--accent);line-height:1.15}
+.sh-t small{color:var(--muted);font-size:13px;line-height:1.3}
+.sh-ic{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:none}
+.sh-av{width:44px;height:44px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font:700 15px var(--fb);cursor:pointer;flex:none}
+.sh-menu{position:absolute;right:0;top:calc(100% + 6px);width:min(300px,calc(100vw - 32px));background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);padding:6px;display:flex;flex-direction:column;z-index:30}
+.sh-who{padding:10px 12px 12px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.sh-who b{display:block;font-size:16px}
+.sh-who small{color:var(--muted);font-size:13px}
+.sh-it{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;padding:10px 12px;border:0;border-radius:10px;background:none;color:var(--fg);font:500 16px var(--fb);text-align:left;cursor:pointer;text-decoration:none}
+.sh-it:hover{background:var(--surface2)}
+.sh-out{color:var(--bad);font-weight:600}
+.sh-link{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 4px;font:600 15px var(--fb);color:var(--accent);text-decoration:none}
+.sh-ic:focus-visible,.sh-av:focus-visible,.sh-it:focus-visible,.sh-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sh-hide{display:none!important}
 img{max-width:100%}[hidden]{display:none!important}
 a.btn,a.bigact{text-decoration:none}
 input[type=password]{font:inherit;font-size:17px;padding:13px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--fg);width:100%;min-width:0}

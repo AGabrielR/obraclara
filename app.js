@@ -17,6 +17,7 @@ doc:'<path d="M7 3h8l4 4v14H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
 search:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-5-5"/>',
 send:'<path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4z"/>',
 user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+pin:'<path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/>',
 hammer:'<path d="M14 6l4 4M12 8l-8 8 4 4 8-8M15 3l6 6-3 3-6-6z"/>'};
 function ic(n,s){s=s||22;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+'</svg>'}
 function nav(items,cur){return '<nav class="nav" aria-label="Menu principal">'+items.map(function(t){return '<button type="button" data-act="tab" data-v="'+t[0]+'"'+(cur===t[0]?' aria-current="page"':'')+'>'+'<span class="ib">'+ic(t[2],24)+(t[3]?'<i class="bdg">'+t[3]+'</i>':'')+'</span><span>'+t[1]+'</span></button>'}).join("")+'</nav>'}
@@ -181,8 +182,10 @@ return '<button type="button" class="back" data-act="eVoltar">'+ic("left",20)+'V
 '<div class="fld"><label for="em">Mensagem ao cliente</label><textarea id="em" data-bind="em" placeholder="Apresente sua equipe e o que está incluso.">'+esc(S.ef.msg)+'</textarea></div>'+
 '<button type="button" class="btn lg block" data-act="eEnviar">Enviar proposta</button>'}
 var DR=dirs(),ds='<div class="sec" style="margin-top:0">Pedidos para você</div><p class="m" style="margin:0 0 10px">Clientes que pediram o seu preço direto. Só você recebe estes pedidos.</p>'+DR.map(function(d){return '<article class="prop" style="border:1.5px solid var(--accent)"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span class="chip acc">Pedido direto</span><span class="m">'+esc(d.quando)+'</span></div><div class="t">'+esc(d.cli)+' · '+esc(d.bairro)+'</div><div>'+esc(d.tipo)+': '+esc(d.desc)+'</div><div class="m">Prazo: '+esc(d.prazo)+'</div>'+gal(d.f)+(S.eSent[d.id]?'<span class="chip ok" style="align-self:flex-start">Proposta enviada</span>':'<button type="button" class="btn" data-act="eAbrir" data-v="'+d.id+'">'+ic("send")+'Responder com meu preço</button>')+'</article>'}).join("");
-var mine=S.obras.map(function(o,i){var pr=pagoPct(o);return pr.p===pr.t?"":'<article class="prop"><div style="display:flex;justify-content:space-between;gap:8px"><span class="chip acc">'+esc(o.tipo)+'</span><span class="m">'+esc(o.bairro)+'</span></div><div class="t">'+money(o.valor)+' · '+pr.pct+'% recebido</div><button type="button" class="btn" data-act="pick" data-t="emp" data-ob="'+i+'">'+ic("camera")+'Postar foto de andamento</button></article>'}).join("");
-return ds+'<div class="sec">Obras em andamento</div><p class="m" style="margin:0 0 10px">A foto que você posta aparece no diário da obra do cliente.</p>'+mine+'<h1 class="h2" style="margin-top:24px">Pedidos na sua região</h1><p class="sub">Você manda o valor da mão de obra. O cliente compara, e você não vê o preço dos concorrentes.</p>'+
+var mine=S.obras.map(function(o,i){var pr=pagoPct(o);return pr.p===pr.t||o.emp.id!=="e1"?"":'<article class="prop"><div style="display:flex;justify-content:space-between;gap:8px"><span class="chip acc">'+esc(o.tipo)+'</span><span class="m">'+esc(o.bairro)+'</span></div><div class="t">'+money(o.valor)+' · '+pr.pct+'% recebido</div><div class="m">Cliente de exemplo · '+etapaAtual(o)+'</div><button type="button" class="btn" data-act="pick" data-t="emp" data-ob="'+i+'">'+ic("camera")+'Postar foto de andamento</button></article>'}).join("");
+if(S.tab==="andamento")return '<h1 class="h2">Obras em andamento</h1><p class="sub">Suas obras contratadas. A foto que você posta aparece na hora no diário da obra do cliente.</p>'+mine+(S.outras||[]).map(function(o){return '<article class="prop"><div style="display:flex;justify-content:space-between;gap:8px"><span class="chip acc">'+esc(o.tipo)+'</span><span class="m">'+esc(o.bairro)+'</span></div><div class="t">'+money(o.valor)+' · '+o.pct+'% recebido</div><div class="m">'+esc(o.cli)+' · Etapa atual: '+esc(o.etapa)+'</div></article>'}).join("");
+if(S.tab==="diretos")return '<h1 class="h2">Pedidos para você</h1><p class="sub">Clientes que pediram o seu preço direto. Nenhum outro empreiteiro vê estes pedidos.</p>'+ds.replace(/^<div class="sec"[^>]*>Pedidos para você<\/div><p class="m"[^>]*>[^<]*<\/p>/,"")+(DR.length?'':'<div class="card">Nenhum pedido direto por enquanto.</div>');
+return '<h1 class="h2">Pedidos na sua região</h1><p class="sub">Você manda o valor da mão de obra. O cliente compara, e você não vê o preço dos concorrentes.</p>'+
 leads().map(function(x){return '<article class="prop"><div style="display:flex;justify-content:space-between;gap:8px"><span class="chip acc">'+esc(x.tipo)+'</span><span class="m">'+esc(x.bairro)+'</span></div><div>'+esc(x.desc)+'</div><div class="m">'+esc(x.prazo)+' · '+esc(x.orc)+' · '+(x.n?x.n+' propostas enviadas':'Nenhuma proposta ainda')+'</div>'+gal(x.f)+(S.eSent[x.id]?'<span class="chip ok" style="align-self:flex-start">Proposta enviada</span>':'<button type="button" class="btn" data-act="eAbrir" data-v="'+x.id+'">'+(x.seu?'Enviar proposta (pedido que você criou)':'Enviar proposta')+'</button>')+'</article>'}).join("")}
 
 function vOp(){
@@ -192,47 +195,43 @@ h+='<button type="button" class="btn lg block" data-act="gerar">Gerar minhas res
 if(S.opOut)h+='<div class="fld" style="margin-top:16px"><label for="out">Copie e mande para quem te enviou este protótipo</label><textarea class="out" id="out" readonly>'+esc(S.opOut)+'</textarea><button type="button" class="btn ghost lg" data-act="copiar">Copiar respostas</button></div>';
 return h}
 
-var KEY="obraclara-v1",USERS={cliente:{role:"cli",nome:"Cliente"},silva:{role:"emp",nome:"Reformas Silva"}};
+var KEY="obraclara-v1",USERS={cliente:{role:"cli",nome:"Cliente"},silva:{role:"emp",nome:"Reformas Silva"}},ETABS=["andamento","regiao","diretos"];
 function lk(id){return location.origin+location.pathname+"?pedido="+id}
 function chip(t,k){return '<span class="chip '+(k||"")+'">'+t+'</span>'}
-function save(){if(S.noSave)return;try{var c={};Object.keys(S).forEach(function(k){if(["user","page","menu","resetArm","inst","lu","lp","pid","noSave"].indexOf(k)<0)c[k]=S[k]});localStorage.setItem(KEY,JSON.stringify(c))}catch(e){if(!save.w){save.w=1;toast("A memória do navegador encheu. As últimas fotos podem não ficar salvas.")}}}
+function save(){if(S.noSave)return;try{var c={};Object.keys(S).forEach(function(k){if(["user","page","lu","lp","pid","noSave"].indexOf(k)<0)c[k]=S[k]});localStorage.setItem(KEY,JSON.stringify(c))}catch(e){if(!save.w){save.w=1;toast("A memória do navegador encheu. As últimas fotos podem não ficar salvas.")}}}
 function load(){try{var d=JSON.parse(localStorage.getItem(KEY)||"null");if(d&&d.obras)Object.keys(d).forEach(function(k){S[k]=d[k]})}catch(e){}}
 function getSess(){try{return JSON.parse(localStorage.getItem(KEY+"-sessao")||"null")}catch(e){return null}}
-function standalone(){try{return matchMedia("(display-mode: standalone)").matches||navigator.standalone}catch(e){return false}}
-function installHtml(){if(standalone())return "";return S.inst?'<button type="button" class="btn ghost lg block" style="margin-top:16px" data-act="instalar">'+ic("plus")+'Instalar como aplicativo</button>':'<p class="m" style="margin-top:18px">Para usar como aplicativo: no Android, toque no menu ⋮ do navegador e em Instalar app. No iPhone, toque em Compartilhar e em Adicionar à Tela de Início.</p>'}
-function vLogin(){return '<div class="topbar"><div class="name">ObraClara</div>'+chip("Demonstração","acc")+'</div>'+
+function etapaAtual(o){var e=o.etapas.filter(function(x){return x.st!=="paga"})[0];return e?"Etapa atual: "+e.nome+(e.st==="aprovar"?", esperando o cliente aprovar":""):"Todas as etapas pagas"}
+function vLogin(){return Shell.bar({title:"ObraClara",sub:"Demonstração",right:Shell.hub()})+
 '<h1 class="h2">Entrar</h1><p class="sub">Para quem está reformando e para quem faz a obra.</p>'+
 '<div class="fld"><label for="lu">Usuário</label><input type="text" id="lu" data-bind="lu" autocomplete="username" autocapitalize="none" value="'+esc(S.lu||"")+'"></div>'+
 '<div class="fld"><label for="lp">Senha</label><input type="password" id="lp" data-bind="lp" autocomplete="current-password" value="'+esc(S.lp||"")+'"></div>'+
 '<button type="button" class="btn lg block" data-act="login">'+ic("check")+'Entrar</button>'+
 '<div class="card" style="margin-top:16px"><div class="t">Acessos de demonstração</div><div class="m" style="margin-bottom:10px">Toque para preencher. A senha dos dois é <b>demo</b>.</div><div class="choices">'+[["cliente","Cliente (dono da obra)"],["silva","Empreiteiro · Reformas Silva"]].map(function(x){return '<button type="button" class="ch" data-act="fillLogin" data-v="'+x[0]+'">'+x[1]+'</button>'}).join("")+'</div></div>'+
-'<div class="sec">Recebeu um pedido de orçamento?</div><p class="m" style="margin:0 0 10px">O empreiteiro abre o link que chega pelo WhatsApp e manda o preço sem criar conta.</p><a class="bigact" href="?pedido=d1"><span class="ico">'+ic("wrench",24)+'</span><span>Ver um pedido de exemplo<small>Como o empreiteiro recebe</small></span></a>'+installHtml()}
-function vPedido(){var D=dirs().filter(function(x){return x.id===S.pid})[0],h='<div class="topbar"><div class="name">ObraClara</div>'+chip("Pedido de orçamento","acc")+'</div>';
+'<div class="sec">Recebeu um pedido de orçamento?</div><p class="m" style="margin:0 0 10px">O empreiteiro abre o link que chega pelo WhatsApp e manda o preço sem criar conta.</p><a class="bigact" href="?pedido=d1"><span class="ico">'+ic("wrench",24)+'</span><span>Ver um pedido de exemplo<small>Como o empreiteiro recebe</small></span></a>'+Shell.installHint()}
+function vPedido(){var D=dirs().filter(function(x){return x.id===S.pid})[0],h=Shell.bar({title:"ObraClara",sub:"Pedido de orçamento"}),who=D&&D.id==="direto"?"o cliente":D?esc(D.cli):"";
 if(!D)return h+'<h1 class="h2">Pedido não encontrado</h1><p class="sub">Confira o link. Nesta demonstração, cada aparelho guarda os próprios dados: um pedido feito em outro celular não aparece aqui.</p><a class="btn lg block" href="?pedido=d1">Ver o pedido de exemplo</a>';
-if(S.eScr==="ok"&&S.eSel===D.id)return h+'<h1 class="h2">Proposta enviada</h1><p class="sub">'+esc(D.cli)+' recebe agora e vê só o seu valor. Você é avisado quando ele escolher.</p>'+(D.id==="direto"?'<a class="btn lg block" href="./">'+ic("home")+'Demonstração: ver o que o cliente recebeu</a>':'')+
+if(S.eScr==="ok"&&S.eSel===D.id)return h+'<h1 class="h2">Proposta enviada</h1><p class="sub">'+(D.id==="direto"?"O cliente":esc(D.cli))+' recebe agora e vê só o seu valor. Você é avisado quando ele escolher.</p>'+(D.id==="direto"?'<a class="btn lg block" href="./">'+ic("home")+'Demonstração: ver o que o cliente recebeu</a>':'')+
 '<div class="card" style="margin-top:12px"><div class="t">Quer receber mais pedidos assim?</div><div class="m" style="margin-bottom:10px">Com uma conta grátis você recebe pedidos da sua região, manda fotos da obra e recebe por etapa.</div><a class="btn ghost block" href="./?u=silva">Criar minha conta grátis</a></div>';
-if(S.eSent[D.id])return h+'<h1 class="h2">Você já mandou sua proposta</h1><p class="sub">'+esc(D.cli)+' já recebeu o seu valor para este pedido.</p><a class="btn ghost lg block" href="./?u=silva">Entrar como empreiteiro</a>';
+if(S.eSent[D.id])return h+'<h1 class="h2">Você já mandou sua proposta</h1><p class="sub">'+(D.id==="direto"?"O cliente":esc(D.cli))+' já recebeu o seu valor para este pedido.</p><a class="btn ghost lg block" href="./?u=silva">Entrar como empreiteiro</a>';
 S.eSel=D.id;S.eScr="form";
-return h+'<div class="banner">Não precisa baixar nada nem criar conta. Só '+(D.id==="direto"?"o cliente":esc(D.cli))+' vê o seu preço.</div>'+vEmp().replace(/^<button type="button" class="back" data-act="eVoltar">[\s\S]*?<\/button>/,"")}
-function head(){var u=S.user,h='<div class="topbar"><div class="name">ObraClara</div><button type="button" class="opbtn" data-act="menu" aria-expanded="'+!!S.menu+'">'+ic("user",18)+esc(u.nome)+'</button></div>';
-if(S.menu)h+='<div class="card" style="margin-bottom:12px"><div class="m" style="margin-bottom:10px">Você entrou como '+(u.role==="emp"?"empreiteiro":"cliente")+'. Os dados desta demonstração ficam salvos só neste aparelho.</div><div class="stack" style="gap:8px">'+
-(S.inst&&!standalone()?'<button type="button" class="btn ghost block" data-act="instalar">Instalar como aplicativo</button>':'')+
-'<button type="button" class="btn ghost block" data-act="reset">'+(S.resetArm?'Toque de novo para apagar tudo e recomeçar':'Recomeçar a demonstração')+'</button><button type="button" class="btn ghost block" data-act="sair">Sair</button></div></div>';
-return h}
-function foot(){if(S.user.role==="emp"){var n=dirs().filter(function(d){return !S.eSent[d.id]}).length;return nav([["empreiteiro","Pedidos","wrench",n||""],["opiniao","Opinião","chat"]],S.tab)}
+return h+'<div class="banner">Não precisa baixar nada nem criar conta. Só '+who+' vê o seu preço.</div>'+vEmp().replace(/^<button type="button" class="back" data-act="eVoltar">[\s\S]*?<\/button>/,"")}
+function head(){var u=S.user,emp=u.role==="emp";return Shell.bar({title:"ObraClara",sub:emp?"Reformas Silva · empreiteiro":"Minhas obras",user:{name:emp?"Reformas Silva":"Cliente",role:emp?"Empreiteiro":"Dono da obra"},items:[{label:"Dar opinião",icon:"chat",run:function(){A.tab({v:"opiniao"})}}]})}
+function foot(){if(S.user.role==="emp"){var n=dirs().filter(function(d){return !S.eSent[d.id]}).length;return nav([["andamento","Em andamento","hammer"],["regiao","Na região","pin"],["diretos","Para você","user",n||""]],S.tab)}
 return nav([["cliente","Minhas obras","home"],["opiniao","Opinião","chat"]],S.tab)}
 function view(){if(S.page==="login")return vLogin();if(S.page==="pedido")return vPedido();
 var b;
 if(S.tab==="opiniao")b=vOp();
-else if(S.tab==="empreiteiro")b=vEmp();
+else if(ETABS.indexOf(S.tab)>-1)b=vEmp();
 else b={home:vHome,novo:vNovo,propostas:vProps,proposta:vProposta,contrato:vContrato,obra:vObra,direto:vDireto,diretoEnviado:vDiretoEnviado}[S.scr]();
 return head()+b+foot()}
-function render(){$("#app").innerHTML=view()}
+function render(){render0();Shell.after()}
+function render0(){$("#app").innerHTML=view()}
 function top(){window.scrollTo(0,0)}
 function mk(e){return {emp:e,valor:price(e,S.job.tipo),prazo:e.prazo}}
 
 var A={
-tab:function(d){S.tab=d.v;S.eScr="lista";S.menu=false;if(d.v==="cliente"&&S.scr!=="diretoEnviado"&&S.scr!=="obra")S.scr="home";try{history.replaceState(null,"","#"+d.v)}catch(e){}render();top()},
+tab:function(d){S.tab=d.v;S.eScr="lista";if(d.v==="cliente"&&S.scr!=="diretoEnviado"&&S.scr!=="obra")S.scr="home";try{history.replaceState(history.state,"","#"+d.v)}catch(e){}render();top()},
 go:function(d){S.scr=d.v;render();top()},
 set:function(d){if(d.k==="mat")S.ef.mat=d.v;else S.f[d.k]=d.v;render()},
 sort:function(d){S.sort=d.v;render()},
@@ -257,13 +256,9 @@ S.job={tipo:f.tipo,desc:f.desc.trim(),bairro:f.bairro.trim(),prazo:f.prazo,orc:f
 verResp:function(){S.sel=S.directResp;S.fromDirect=true;S.scr="proposta";render();top()},
 verComoEmp:function(){S.eScr="lista";S.ef={valor:"",prazo:"",msg:"",mat:S.ef.mat};save();location.href=location.pathname+"?pedido=direto"},
 verComoCli:function(){S.scr="diretoEnviado";S.eScr="lista";save();location.href=location.pathname},
-menu:function(){S.menu=!S.menu;S.resetArm=0;render()},
 fillLogin:function(d){S.lu=d.v;S.lp="demo";render()},
 login:function(){var u=USERS[String(S.lu||"").trim().toLowerCase()];if(!u||String(S.lp||"").trim()!=="demo"){toast("Usuário ou senha não conferem. Use um dos acessos de demonstração.");return}
-S.user=u;try{localStorage.setItem(KEY+"-sessao",JSON.stringify(u))}catch(e){}S.page="app";S.tab=u.role==="emp"?"empreiteiro":"cliente";S.eScr="lista";if(u.role==="emp")S.eSel=null;render();top()},
-sair:function(){try{localStorage.removeItem(KEY+"-sessao")}catch(e){}S.noSave=1;location.href=location.pathname},
-reset:function(){if(!S.resetArm){S.resetArm=1;render();return}try{localStorage.removeItem(KEY)}catch(e){}S.noSave=1;location.href=location.pathname},
-instalar:function(){if(S.inst){S.inst.prompt();S.inst=null;render()}},
+S.user=u;try{localStorage.setItem(KEY+"-sessao",JSON.stringify(u))}catch(e){}S.page="app";S.tab=u.role==="emp"?"andamento":"cliente";S.eScr="lista";if(u.role==="emp")S.eSel=null;render();top()},
 eAbrir:function(d){S.eSel=d.v;S.eScr="form";S.ef={valor:"",prazo:"",msg:"",mat:S.ef.mat};render();top()},
 eVoltar:function(){S.eScr="lista";render();top()},
 eEnviar:function(){var v=num(S.ef.valor),p=num(S.ef.prazo);if(v<=0||p<=0){toast("Informe o valor e o prazo em dias.");return}
@@ -282,14 +277,15 @@ fs.forEach(function(f){shrink(f,function(u){if(u)out.push(u);if(--n)return;if(!o
 if(p.t==="form")S.f.fotos=S.f.fotos.concat(out).slice(0,6);else if(p.t==="msg")S.msgFotos=S.msgFotos.concat(out).slice(0,4);else{S.obras[+p.ob].diario.push({d:HOJE,a:"emp",t:"Atualização de andamento.",f:out});toast("Foto enviada. Ela aparece no diário da obra do cliente.")}
 render();save()});});fl.value=""});
 document.addEventListener("change",function(e){if(e.target.id==="aceito")$("#btnAprovar").disabled=!e.target.checked});
+S.outras=[{tipo:"Cozinha",cli:"Sr. Paulo",bairro:"Centro",valor:8400,pct:50,etapa:"Execução, revestimento da parede"},{tipo:"Telhado",cli:"Dona Lúcia",bairro:"Vila Nova",valor:5200,pct:20,etapa:"Entrada e mobilização, troca das telhas quebradas"}];
 load();
-var qs=new URLSearchParams(location.search),sess=getSess();S.user=sess;S.menu=false;S.resetArm=0;
+var qs=new URLSearchParams(location.search),sess=getSess();S.user=sess;
 if(qs.get("u"))S.lu=qs.get("u");
 if(qs.get("pedido")){S.page="pedido";S.pid=qs.get("pedido")}
-else if(sess){S.page="app";S.tab=sess.role==="emp"?"empreiteiro":"cliente";var h0=location.hash.slice(1);if(h0==="opiniao")S.tab=h0;if(sess.role==="emp"&&S.eScr!=="form")S.eScr="lista"}
+else if(sess){S.page="app";var h0=location.hash.slice(1);if(sess.role==="emp"){S.tab=ETABS.indexOf(h0)>-1?h0:ETABS.indexOf(S.tab)>-1?S.tab:"andamento";if(S.eScr!=="form")S.eScr="lista"}else S.tab=h0==="opiniao"?h0:"cliente"}
 else S.page="login";
+Shell.init({render:render,onReset:function(){try{localStorage.removeItem(KEY)}catch(e){}S.noSave=1;location.href=location.pathname},onLogout:function(){try{localStorage.removeItem(KEY+"-sessao")}catch(e){}save();S.noSave=1;location.href=location.pathname}});
 render();
 document.addEventListener("keydown",function(e){if(e.key==="Enter"&&(e.target.id==="lp"||e.target.id==="lu"))A.login()});
-window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();S.inst=e;if(S.page==="login"||S.menu)render()});
 if("serviceWorker" in navigator&&location.protocol==="https:")navigator.serviceWorker.register("sw.js").catch(function(){});
 })();
