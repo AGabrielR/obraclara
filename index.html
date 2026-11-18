@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ObraClara · Demonstração</title>
+<meta name="description" content="Protótipo: peça o preço da mão de obra da sua reforma, compare e acompanhe a obra.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#4338ca">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ObraClara">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-wrap">
+<div id="app"></div>
+<p class="legend-note">Protótipo de demonstração. Os clientes, empreiteiros e valores são fictícios, as fotos foram geradas por IA e os dados ficam só neste aparelho.</p>
+<div class="toast" id="toast" hidden></div>
+<input type="file" id="file" accept="image/*" multiple hidden>
+<dialog class="dz" id="dz"><img id="dzimg" alt="Foto ampliada"><button type="button" class="btn ghost lg" data-act="fechar">Fechar</button></dialog>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
